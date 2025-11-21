@@ -1,23 +1,40 @@
+# Provider-Lookup
+
 ```mermaid
-flowchart LR
+flowchart TD
 
-A[Download NPPES CSV data] --> B[Create Django project and providers app]
-B --> C[Design database models]
-C --> D[Create and run migrations]
+subgraph Setup [Project Setup]
+    A[Download NPPES CSV data]
+    B[Create Django project & app]
+    C[Design database models]
+    D[Run migrations]
+    A --> B --> C --> D
+end
 
-D --> E[Import taxonomy codes]
-E --> F[Import provider records]
-F --> G[Link providers to taxonomy codes]
+subgraph Import [Data Import Pipeline]
+    E[Import taxonomy codes]
+    F[Import provider records]
+    G[Link providers to taxonomy codes]
+    H[Add database indexes]
+    D --> E --> F --> G --> H
+end
 
-G --> H[Add database indexes]
-H --> I[Implement serializers]
-I --> J[Implement views and search logic]
+subgraph Backend [Backend Development]
+    I[Implement serializers]
+    J[Implement views & search logic]
+    H --> I --> J
+end
 
-J --> K[Create HTML search page and results template]
-K --> L[Add pagination and performance optimizations]
+subgraph Frontend [Frontend Development]
+    K[Create HTML search page]
+    L[Add pagination & optimizations]
+    M[Redesign UI]
+    J --> K --> L --> M
+end
 
-L --> M[Redesign UI]
-M --> N[Fix gitignore and remove large files]
-
-N --> O[Push final project to GitHub]
+subgraph Finalize [Finalize Project]
+    N[Fix gitignore & remove files]
+    O[Push project to GitHub]
+    M --> N --> O
+end
 ```
