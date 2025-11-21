@@ -1,6 +1,6 @@
 # Provider-Lookup
 ```mermaid
-flowchart TD
+flowchart LR
 
 %% Step 1: Download raw NPPES dataset
 A[Download NPPES CSV data] --> B[Create Django project and providers app]
