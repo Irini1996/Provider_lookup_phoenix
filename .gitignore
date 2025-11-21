@@ -35,3 +35,4 @@ provider_lookup-*.tar
 npm-debug.log
 /assets/node_modules/
 
+priv/data/npidata_pfile_20050523-20251109.csv
