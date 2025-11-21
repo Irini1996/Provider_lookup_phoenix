@@ -5,7 +5,7 @@ flowchart LR
 %% Step 1: Download raw NPPES dataset
 A[Download NPPES CSV data] --> B[Create Django project and providers app]
 
-%% Step 2: Start the Django project structure
+%% Step 2: Start the Django project structure.
 B --> C[Design database models]
 
 %% Step 3: Prepare PostgreSQL schemas and run migrations
