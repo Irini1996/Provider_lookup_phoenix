@@ -1,0 +1,50 @@
+Table "schema_migrations" {
+  "version" int8 [pk, not null]
+  "inserted_at" timestamp
+}
+
+Table "providers" {
+  "id" int8 [pk, not null, increment]
+  "npi_number" varchar(255)
+  "enumeration_type" varchar(255)
+  "first_name" varchar(255)
+  "last_name" varchar(255)
+  "organization_name" varchar(255)
+  "address_purpose" varchar(255)
+  "address_line" varchar(255)
+  "city" varchar(255)
+  "state" varchar(255)
+  "postal_code" varchar(255)
+  "country_code" varchar(255)
+  "telephone_number" varchar(255)
+  "fax_number" varchar(255)
+  "inserted_at" timestamp [not null]
+  "updated_at" timestamp [not null]
+}
+
+Table "taxonomies" {
+  "id" int8 [pk, not null, increment]
+  "taxonomy_code" varchar(255) [unique]
+  "taxonomy_classification" varchar(255)
+  "taxonomy_specialization" varchar(255)
+  "inserted_at" timestamp
+  "updated_at" timestamp
+}
+
+Table "provider_taxonomies" {
+  "id" int8 [pk, not null, increment]
+  "is_primary" bool [not null, default: false]
+  "provider_id" int8
+  "taxonomy_id" int8
+  "inserted_at" timestamp [not null]
+  "updated_at" timestamp [not null]
+
+  Indexes {
+    provider_id [type: btree, name: "provider_taxonomies_provider_id_index"]
+    taxonomy_id [type: btree, name: "provider_taxonomies_taxonomy_id_index"]
+  }
+}
+
+Ref "provider_taxonomies_provider_id_fkey":"providers"."id" < "provider_taxonomies"."provider_id"
+
+Ref "provider_taxonomies_taxonomy_id_fkey":"taxonomies"."id" < "provider_taxonomies"."taxonomy_id"
