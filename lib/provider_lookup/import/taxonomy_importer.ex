@@ -1,34 +1,55 @@
-NimbleCSV.define(TaxonomyParser, separator: ",", escape: "\"")
-
 defmodule ProviderLookup.Import.TaxonomyImporter do
   alias ProviderLookup.Repo
   alias ProviderLookup.Providers.Taxonomy
+  require Logger
 
-  @file_path "priv/data/taxonomies.csv"
+  @batch_size 1000
 
-  def import do
-    IO.puts("Starting taxonomy import...")
+  def import_taxonomies do
+    file_path = priv_path("data/taxonomies.csv")
 
-    rows =
-      @file_path
-      |> File.stream!()
-      |> Stream.drop(1)
-      |> TaxonomyParser.parse_stream()
-      |> Enum.map(&row_to_map/1)
-
-    Repo.insert_all("taxonomies", rows, timestamps: true)
-
-
-
-
-    IO.puts("Inserted taxonomies!")
+    file_path
+    |> File.stream!([], :line)
+    |> Stream.drop(1)                   # Skip header row
+    |> Stream.map(&parse_csv_line/1)
+    |> Stream.chunk_every(@batch_size)
+    |> Enum.reduce(0, fn batch, acc ->
+      insert_batch(batch)
+      count = acc + length(batch)
+      Logger.info("Inserted #{count} taxonomies...")
+      count
+    end)
   end
 
-  defp row_to_map(row) do
+  defp priv_path(relative) do
+    :provider_lookup
+    |> :code.priv_dir()
+    |> Path.join(relative)
+  end
+
+  # Parse each CSV line into a map matching the Taxonomy schema
+  defp parse_csv_line(line) do
+    [code, classification, specialization | _] =
+      line
+      |> String.trim()
+      |> String.split(",", parts: 4)
+
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+
     %{
-      taxonomy_code: Enum.at(row, 0),
-      taxonomy_classification: Enum.at(row, 1),
-      taxonomy_specialization: Enum.at(row, 2)
+      taxonomy_code: code,
+      taxonomy_classification: classification,
+      taxonomy_specialization: specialization,
+      inserted_at: now,
+      updated_at: now
     }
   end
+
+  # Insert batch using fast insert_all
+  defp insert_batch(batch) do
+    Repo.insert_all(Taxonomy, batch, on_conflict: :nothing)
+  end
 end
+#This module reads a taxonomy CSV file, parses each row into a taxonomy record, and bulk-inserts them into the database.
+#It processes the file efficiently in batches to handle large datasets.
+#Throughout the process, it logs progress so you can track how many taxonomies were imported.
