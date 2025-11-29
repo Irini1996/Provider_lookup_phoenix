@@ -4,8 +4,11 @@ defmodule ProviderLookup.Providers.ProviderTaxonomy do
 
   schema "provider_taxonomies" do
     field :is_primary, :boolean, default: false
-    field :provider_id, :id
-    field :taxonomy_id, :id
+
+
+    belongs_to :provider, ProviderLookup.Providers.Provider
+    belongs_to :taxonomy, ProviderLookup.Providers.Taxonomy
+
 
     timestamps(type: :utc_datetime)
   end

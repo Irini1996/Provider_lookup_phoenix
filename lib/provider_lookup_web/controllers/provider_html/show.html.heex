@@ -1,0 +1,78 @@
+<div class="w-full flex justify-center mt-10">
+  <div class="w-full max-w-4xl bg-gray-800 p-8 rounded-xl shadow-xl">
+
+    <!-- Header -->
+    <h1 class="text-4xl font-bold text-center text-white mb-8">
+      Provider Details
+    </h1>
+
+    <!-- Provider Card -->
+    <div class="bg-gray-700 p-6 rounded-lg">
+      <h2 class="text-2xl text-white font-semibold mb-2">
+        <%= @provider.first_name %> <%= @provider.last_name %>
+      </h2>
+
+      <p class="text-gray-300 text-lg mb-1">
+        <span class="font-semibold text-white">NPI:</span> <%= @provider.npi_number %>
+      </p>
+
+      <%= if @provider.organization_name && @provider.organization_name != "" do %>
+        <p class="text-gray-300 text-lg mb-1">
+          <span class="font-semibold text-white">Organization:</span>
+          <%= @provider.organization_name %>
+        </p>
+      <% end %>
+
+      <p class="text-gray-300 text-lg mb-1">
+        <span class="font-semibold text-white">Type:</span>
+        <%= if @provider.enumeration_type == "1", do: "Individual", else: "Organization" %>
+      </p>
+      
+      <h3 class="text-xl text-white font-semibold mt-6 mb-3">Address</h3>
+
+      <p class="text-gray-300">
+        <%= @provider.address_line %><br/>
+        <%= @provider.city %>, <%= @provider.state %> <%= @provider.postal_code %><br/>
+        <%= @provider.country_code %>
+      </p>
+
+      <h3 class="text-xl text-white font-semibold mt-6 mb-3">Contact</h3>
+
+      <p class="text-gray-300">
+        <span class="font-semibold text-white">Phone:</span>
+        <%= if @provider.telephone_number != "", do: @provider.telephone_number, else: "N/A" %>
+      </p>
+
+      <p class="text-gray-300">
+        <span class="font-semibold text-white">Fax:</span>
+        <%= if @provider.fax_number != "", do: @provider.fax_number, else: "N/A" %>
+      </p>
+
+      <h3 class="text-xl text-white font-semibold mt-6 mb-3">Taxonomies</h3>
+
+      <%= if @taxonomies == [] do %>
+        <p class="text-gray-400 italic">No taxonomy information available.</p>
+      <% else %>
+        <ul class="space-y-2">
+          <%= for t <- @taxonomies do %>
+            <li class="bg-gray-600 p-3 rounded-md">
+              <p class="text-white font-semibold text-lg"><%= t.code %></p>
+
+              <p class="text-gray-300">
+                Primary:
+                <%= if t.primary, do: "Yes", else: "No" %>
+              </p>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+
+    <div class="mt-8 text-center">
+      <a href="/search" class="px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold">
+        Back to Search
+      </a>
+    </div>
+
+  </div>
+</div>

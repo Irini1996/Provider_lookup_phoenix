@@ -1,0 +1,107 @@
+
+<% params = @params || %{} %>
+
+<div class="container" style="max-width: 900px; margin: 40px auto;">
+
+  <h1 style="text-align:center; font-size:32px; font-weight:bold; margin-bottom:30px;">
+    Provider Lookup
+  </h1>
+
+  <!-- SEARCH FORM -->
+  <form action="/search" method="get"
+        style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center;">
+
+    <input name="first_name" placeholder="First Name" class="input"
+           value={params["first_name"] || ""} />
+
+    <input name="last_name" placeholder="Last Name" class="input"
+           value={params["last_name"] || ""} />
+
+    <input name="npi" placeholder="NPI" class="input"
+           value={params["npi"] || ""} />
+
+    <input name="taxonomy" placeholder="Taxonomy" class="input"
+           value={params["taxonomy"] || ""} />
+
+    <input name="city" placeholder="City" class="input"
+           value={params["city"] || ""} />
+
+    <input name="state" placeholder="State" class="input"
+           value={params["state"] || ""} />
+
+    <input name="zip" placeholder="ZIP Code" class="input"
+           value={params["zip"] || ""} />
+
+    <button class="btn">Search</button>
+  </form>
+
+  <style>
+    .input {
+      padding: 10px;
+      width: 260px;
+      background: #222;
+      border: 1px solid #555;
+      border-radius: 6px;
+      color: white;
+    }
+    .btn {
+      padding: 10px 18px;
+      background: #4C6EF5;
+      border-radius: 6px;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      margin-top: 30px;
+      color: white;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #444;
+    }
+  </style>
+
+  <!-- RESULTS ONLY AFTER SEARCH -->
+  <%= if @query_submitted do %>
+
+    <%= if @providers == [] do %>
+
+      <p style="margin-top:30px; font-style:italic;">
+        No results found.
+      </p>
+
+    <% else %>
+
+      <h2 style="margin-top:40px;">Results</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>NPI</th>
+            <th>Name</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Taxonomy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for p <- @providers do %>
+            <tr>
+              <td><a href={"/providers/#{p.id}"}><%= p.npi_number %></a></td>
+              <td><%= p.first_name %> <%= p.last_name %></td>
+              <td><%= p.city %></td>
+              <td><%= p.state %></td>
+              <td><%= Enum.join(p.taxonomy_names || [], ", ") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+    <% end %>
+
+  <% end %>
+
+</div>

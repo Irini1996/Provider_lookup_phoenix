@@ -1,0 +1,101 @@
+<h1 style="text-align:center; font-size:32px; margin-top:20px;">
+  Provider Lookup
+</h1>
+
+<div style="display:flex; justify-content:center; margin-top:20px;">
+  <form method="get" action="/providerlookup"
+        style="background:#222; padding:20px; border-radius:10px; width:80%; max-width:900px;">
+
+    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px;">
+      <input type="text" name="name" placeholder="First or last name"
+        style="padding:10px; font-size:16px; background:white; color:black;" />
+
+      <input type="text" name="npi" placeholder="NPI"
+        style="padding:10px; font-size:16px; background:white; color:black;" />
+
+      <input type="text" name="city" placeholder="City"
+        style="padding:10px; font-size:16px; background:white; color:black;" />
+
+      <input type="text" name="state" placeholder="State"
+        style="padding:10px; font-size:16px; background:white; color:black;" />
+
+      <input type="text" name="postal_code" placeholder="ZIP Code"
+        style="padding:10px; font-size:16px; background:white; color:black;" />
+
+      <input type="text" name="taxonomy" placeholder="Taxonomy (Specialization)"
+        style="padding:10px; font-size:16px; background:white; color:black;" />
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+      <button type="submit"
+        style="padding:10px 25px; font-size:18px; cursor:pointer; background:#4CAF50; color:white; border:none; border-radius:8px;">
+        Search
+      </button>
+    </div>
+
+  </form>
+</div>
+
+<hr style="margin-top:40px;" />
+
+<div style="max-width:900px; margin:auto;">
+
+  <%= if Enum.empty?(@providers) do %>
+    <p style="text-align:center; color:#aaa; margin-top:30px;">No providers found.</p>
+  <% end %>
+
+  <%= for p <- @providers do %>
+
+    <div style="
+      background:#1f1f1f; margin:20px 0; padding:20px;
+      border-radius:10px; color:white; box-shadow:0 0 10px rgba(0,0,0,0.3);
+    ">
+
+      <!-- NAME OR ORGANIZATION -->
+      <h2 style="margin:0; font-size:24px;">
+        <%= 
+          case {clean_field(p.first_name), clean_field(p.last_name)} do
+            {"", ""} -> clean_field(p.organization_name)
+            {f, ""} -> f
+            {"", l} -> l
+            {f, l} -> "#{f} #{l}"
+          end
+        %>
+      </h2>
+
+      <!-- ADDRESS -->
+      <p style="margin:10px 0 0 0; font-size:16px;">
+        <strong>Address:</strong>
+        <%= build_address(p) %>
+      </p>
+
+      <!-- NPI -->
+      <p style="margin:10px 0;">
+        <strong>NPI:</strong> <%= clean_field(p.npi_number) %>
+      </p>
+
+      <!-- SPECIALIZATIONS -->
+      <%= if p.taxonomies != [] do %>
+
+        <% uniq_specs =
+          p.taxonomies
+          |> Enum.map(&clean_field(&1.taxonomy_specialization))
+          |> Enum.uniq()
+        %>
+
+        <div style="margin-top:15px;">
+          <strong>Specializations:</strong>
+          <ul style="margin-top:5px; padding-left:20px;">
+            <%= for spec <- uniq_specs do %>
+              <li><%= spec %></li>
+            <% end %>
+          </ul>
+        </div>
+
+      <% end %>
+
+    </div>
+
+  <% end %>
+
+</div>

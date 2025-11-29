@@ -14,11 +14,15 @@ defmodule ProviderLookupWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", ProviderLookupWeb do
-    pipe_through :browser
+scope "/", ProviderLookupWeb do
+  pipe_through :browser
 
-    get "/", PageController, :home
-  end
+  # redirect root -> /search
+  get "/", ProviderController, :search
+  get "/search", ProviderController, :search
+  get "/providers/:npi", ProviderController, :show
+end
+
 
   # Other scopes may use custom stacks.
   # scope "/api", ProviderLookupWeb do

@@ -7,6 +7,10 @@ defmodule ProviderLookup.Providers.Taxonomy do
     field :taxonomy_classification, :string
     field :taxonomy_specialization, :string
 
+    has_many :provider_taxonomies, ProviderLookup.Providers.ProviderTaxonomy
+    has_many :providers, through: [:provider_taxonomies, :provider]
+
+
     timestamps(type: :utc_datetime)
   end
 
