@@ -1,4 +1,3 @@
-
 <% params = @params || %{} %>
 
 <div class="container" style="max-width: 900px; margin: 40px auto;">
@@ -23,14 +22,18 @@
     <input name="taxonomy" placeholder="Taxonomy" class="input"
            value={params["taxonomy"] || ""} />
 
-    <input name="city" placeholder="City" class="input"
-           value={params["city"] || ""} />
+    <!-- PRACTICE ADDRESS FILTERS -->
+    <input name="practice_address_1" placeholder="Practice Street" class="input"
+           value={params["practice_address_1"] || ""} />
 
-    <input name="state" placeholder="State" class="input"
-           value={params["state"] || ""} />
+    <input name="practice_city" placeholder="Practice City" class="input"
+           value={params["practice_city"] || ""} />
 
-    <input name="zip" placeholder="ZIP Code" class="input"
-           value={params["zip"] || ""} />
+    <input name="practice_state" placeholder="Practice State" class="input"
+           value={params["practice_state"] || ""} />
+
+    <input name="practice_zip" placeholder="Practice ZIP Code" class="input"
+           value={params["practice_zip"] || ""} />
 
     <button class="btn">Search</button>
   </form>
@@ -82,6 +85,7 @@
           <tr>
             <th>NPI</th>
             <th>Name</th>
+            <th>Practice Address</th>
             <th>City</th>
             <th>State</th>
             <th>Taxonomy</th>
@@ -92,8 +96,11 @@
             <tr>
               <td><a href={"/providers/#{p.id}"}><%= p.npi_number %></a></td>
               <td><%= p.first_name %> <%= p.last_name %></td>
-              <td><%= p.city %></td>
-              <td><%= p.state %></td>
+
+              <td><%= p.practice_address_1 %></td>
+              <td><%= p.practice_city %></td>
+              <td><%= p.practice_state %></td>
+
               <td><%= Enum.join(p.taxonomy_names || [], ", ") %></td>
             </tr>
           <% end %>

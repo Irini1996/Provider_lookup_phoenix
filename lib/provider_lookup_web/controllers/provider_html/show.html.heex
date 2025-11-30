@@ -29,6 +29,16 @@
       </p>
       
       <h3 class="text-xl text-white font-semibold mt-6 mb-3">Address</h3>
+      <p class="text-gray-300">
+       <%= @provider.practice_address_1 %><br/>
+
+       <%= if @provider.practice_address_2 && @provider.practice_address_2 != "" do %>
+        <%= @provider.practice_address_2 %><br/>
+       <% end %>
+
+       <%= @provider.practice_city %>, <%= @provider.practice_state %> <%= @provider.practice_zip %><br/>
+       <%= @provider.practice_country %>
+      </p>
 
       <p class="text-gray-300">
         <%= @provider.address_line %><br/>

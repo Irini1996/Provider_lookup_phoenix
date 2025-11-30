@@ -65,6 +65,17 @@ defmodule ProviderLookup.Import.ProviderImporter do
         telephone_number:  Enum.at(fields, 26),
         fax_number:        Enum.at(fields, 27),
 
+        # ------------------------------------------------------
+        # BUSINESS PRACTICE LOCATION ADDRESS (NEW FIELDS)
+        # ------------------------------------------------------
+        practice_address_1: Enum.at(fields, 28),
+        practice_address_2: Enum.at(fields, 29),
+        practice_city:      Enum.at(fields, 31),
+        practice_state:     Enum.at(fields, 32),
+        practice_zip:       Enum.at(fields, 33),
+        practice_country:   Enum.at(fields, 34),
+        practice_phone:     Enum.at(fields, 35),   # <-- ΤΟ ΚΑΙΝΟΥΡΙΟ ΠΕΔΙΟ
+
         inserted_at: now,
         updated_at: now
       }

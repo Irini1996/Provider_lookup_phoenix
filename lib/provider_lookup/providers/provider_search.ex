@@ -14,8 +14,16 @@ defmodule ProviderLookup.Providers.ProviderSearch do
           npi_number: p.npi_number,
           first_name: p.first_name,
           last_name: p.last_name,
-          city: p.city,
-          state: p.state,
+
+          # USE PRACTICE FIELDS NOW
+          practice_address_1: p.practice_address_1,
+          practice_address_2: p.practice_address_2,
+          practice_city:      p.practice_city,
+          practice_state:     p.practice_state,
+          practice_zip:       p.practice_zip,
+          practice_country:   p.practice_country,
+          practice_phone:     p.practice_phone,
+
           taxonomy_names:
             fragment(
               "array_remove(array_agg(COALESCE(? || ' ' || ?, '')), '')",
@@ -28,9 +36,12 @@ defmodule ProviderLookup.Providers.ProviderSearch do
     |> maybe_like(:first_name, params["first_name"])
     |> maybe_like(:last_name,  params["last_name"])
     |> maybe_eq(:npi_number,   params["npi"])
-    |> maybe_like(:city,       params["city"])
-    |> maybe_like(:state,      params["state"])
-    |> maybe_like(:postal_code, params["zip"])
+
+    |> maybe_like(:practice_address_1, params["practice_address_1"])
+    |> maybe_like(:practice_city,      params["practice_city"])
+    |> maybe_like(:practice_state,     params["practice_state"])
+    |> maybe_like(:practice_zip,       params["practice_zip"])
+
     |> maybe_taxonomy(params["taxonomy"])
     |> limit(50)
     |> Repo.all()
@@ -49,6 +60,10 @@ defmodule ProviderLookup.Providers.ProviderSearch do
 
   defp maybe_taxonomy(query, ""), do: query
   defp maybe_taxonomy(query, taxonomy) do
-    where(query, [_, pt, t], ilike(t.taxonomy_code, ^"%#{taxonomy}%"))
+    where(query, [_, _, t],
+      ilike(t.taxonomy_code, ^"%#{taxonomy}%") or
+      ilike(t.taxonomy_classification, ^"%#{taxonomy}%") or
+      ilike(t.taxonomy_specialization, ^"%#{taxonomy}%")
+    )
   end
 end
