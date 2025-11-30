@@ -8,12 +8,13 @@ defmodule ProviderLookupWeb.ProviderController do
     render(conn, :search,
       params: %{},
       providers: [],
-      query_submitted: false
+      query_submitted: false,
+      page: 1
     )
   end
 
   def search(conn, params) do
-    # normalize params: ensure all keys exist
+    # normalize params
     params =
       params
       |> Map.put_new("first_name", "")
@@ -24,24 +25,26 @@ defmodule ProviderLookupWeb.ProviderController do
       |> Map.put_new("practice_city", "")
       |> Map.put_new("practice_state", "")
       |> Map.put_new("practice_zip", "")
+      |> Map.put_new("page", "1")
 
-    # CHECK IF USER HAS TYPED ANYTHING
+    # detect if user typed anything
     query_submitted =
       params
-      |> Enum.reject(fn {k,_} -> k in ["_csrf_token", "_utf8"] end)
+      |> Enum.reject(fn {k,_} -> k in ["_csrf_token", "_utf8", "page"] end)
       |> Enum.any?(fn {_k, v} -> v != "" end)
 
-    providers =
+    %{results: providers, page: page} =
       if query_submitted do
         ProviderSearch.search(params)
       else
-        []
+        %{results: [], page: 1}
       end
 
     render(conn, :search,
       params: params,
       query_submitted: query_submitted,
-      providers: providers
+      providers: providers,
+      page: page
     )
   end
 

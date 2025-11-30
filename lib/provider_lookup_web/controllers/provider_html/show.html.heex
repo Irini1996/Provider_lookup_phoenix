@@ -1,85 +1,75 @@
-<div class="w-full flex justify-center mt-10">
-  <div class="w-full max-w-4xl bg-gray-800 p-8 rounded-xl shadow-xl">
+<div class="min-h-screen bg-gradient-to-b from-[#283a60] via-[#364872] to-[#4c5a85] text-white py-16 px-6">
 
-    <!-- Header -->
-    <h1 class="text-4xl font-bold text-center text-white mb-8">
+  <div class="w-full max-w-4xl mx-auto bg-white/10 backdrop-blur-md p-10 rounded-2xl shadow-xl">
+
+    <h1 class="text-4xl font-bold text-center mb-10">
       Provider Details
     </h1>
 
-    <!-- Provider Card -->
-    <div class="bg-gray-700 p-6 rounded-lg">
-      <h2 class="text-2xl text-white font-semibold mb-2">
+    <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+
+      <h2 class="text-3xl font-semibold mb-4">
         <%= @provider.first_name %> <%= @provider.last_name %>
       </h2>
 
-      <p class="text-gray-300 text-lg mb-1">
-        <span class="font-semibold text-white">NPI:</span> <%= @provider.npi_number %>
-      </p>
+      <p class="text-lg mb-2"><span class="font-semibold">NPI:</span> <%= @provider.npi_number %></p>
 
       <%= if @provider.organization_name && @provider.organization_name != "" do %>
-        <p class="text-gray-300 text-lg mb-1">
-          <span class="font-semibold text-white">Organization:</span>
+        <p class="text-lg mb-2">
+          <span class="font-semibold">Organization:</span>
           <%= @provider.organization_name %>
         </p>
       <% end %>
 
-      <p class="text-gray-300 text-lg mb-1">
-        <span class="font-semibold text-white">Type:</span>
+      <p class="text-lg mb-6">
+        <span class="font-semibold">Type:</span>
         <%= if @provider.enumeration_type == "1", do: "Individual", else: "Organization" %>
       </p>
-      
-      <h3 class="text-xl text-white font-semibold mt-6 mb-3">Address</h3>
-      <p class="text-gray-300">
-       <%= @provider.practice_address_1 %><br/>
 
-       <%= if @provider.practice_address_2 && @provider.practice_address_2 != "" do %>
-        <%= @provider.practice_address_2 %><br/>
-       <% end %>
+      <h3 class="text-2xl font-semibold mt-6 mb-3">Practice Address</h3>
 
-       <%= @provider.practice_city %>, <%= @provider.practice_state %> <%= @provider.practice_zip %><br/>
-       <%= @provider.practice_country %>
+      <p class="mb-4">
+        <%= @provider.practice_address_1 %><br/>
+
+        <%= if @provider.practice_address_2 && @provider.practice_address_2 != "" do %>
+          <%= @provider.practice_address_2 %><br/>
+        <% end %>
+
+        <%= @provider.practice_city %>, <%= @provider.practice_state %> <%= @provider.practice_zip %><br/>
+        <%= @provider.practice_country %>
       </p>
 
-      <p class="text-gray-300">
+      <h3 class="text-2xl font-semibold mt-6 mb-3">Registered Address</h3>
+
+      <p class="mb-6">
         <%= @provider.address_line %><br/>
         <%= @provider.city %>, <%= @provider.state %> <%= @provider.postal_code %><br/>
         <%= @provider.country_code %>
       </p>
 
-      <h3 class="text-xl text-white font-semibold mt-6 mb-3">Contact</h3>
+      <h3 class="text-2xl font-semibold mt-6 mb-3">Contact</h3>
 
-      <p class="text-gray-300">
-        <span class="font-semibold text-white">Phone:</span>
-        <%= if @provider.telephone_number != "", do: @provider.telephone_number, else: "N/A" %>
-      </p>
+      <p class="mb-2"><span class="font-semibold">Phone:</span> <%= if @provider.telephone_number != "", do: @provider.telephone_number, else: "N/A" %></p>
+      <p><span class="font-semibold">Fax:</span> <%= if @provider.fax_number != "", do: @provider.fax_number, else: "N/A" %></p>
 
-      <p class="text-gray-300">
-        <span class="font-semibold text-white">Fax:</span>
-        <%= if @provider.fax_number != "", do: @provider.fax_number, else: "N/A" %>
-      </p>
-
-      <h3 class="text-xl text-white font-semibold mt-6 mb-3">Taxonomies</h3>
+      <h3 class="text-2xl font-semibold mt-6 mb-3">Taxonomies</h3>
 
       <%= if @taxonomies == [] do %>
-        <p class="text-gray-400 italic">No taxonomy information available.</p>
+        <p class="italic text-gray-300">No taxonomy information available.</p>
       <% else %>
-        <ul class="space-y-2">
+        <ul class="space-y-3">
           <%= for t <- @taxonomies do %>
-            <li class="bg-gray-600 p-3 rounded-md">
-              <p class="text-white font-semibold text-lg"><%= t.code %></p>
-
-              <p class="text-gray-300">
-                Primary:
-                <%= if t.primary, do: "Yes", else: "No" %>
-              </p>
+            <li class="bg-white/10 p-4 rounded-lg">
+              <p class="font-semibold text-lg"><%= t.code %></p>
+              <p class="text-gray-300">Primary: <%= if t.primary, do: "Yes", else: "No" %></p>
             </li>
           <% end %>
         </ul>
       <% end %>
     </div>
 
-    <div class="mt-8 text-center">
-      <a href="/search" class="px-5 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold">
+    <div class="mt-10 text-center">
+      <a href="/search" class="px-6 py-3 bg-blue-500 hover:bg-blue-400 text-white rounded-lg font-semibold transition shadow-lg">
         Back to Search
       </a>
     </div>
