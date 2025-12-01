@@ -1,22 +1,49 @@
 defmodule ProviderLookupWeb.ProviderController do
   use ProviderLookupWeb, :controller
+
   alias ProviderLookup.Providers.ProviderSearch
   alias ProviderLookup.Providers.Provider
   alias ProviderLookup.Repo
 
+  # GET "/"
   def index(conn, _params) do
     render(conn, :search,
       params: %{},
       providers: [],
       query_submitted: false,
-      page: 1
+      page: 1,
+      has_next: false,
+      has_prev: false
     )
   end
 
-  def search(conn, params) do
-    # normalize params
+  # GET "/search"
+  def search(conn, incoming_params) do
+    #
+    # Detect if the user actually typed something
+    #
+    fields = [
+      "first_name",
+      "last_name",
+      "npi",
+      "taxonomy",
+      "practice_address_1",
+      "practice_city",
+      "practice_state",
+      "practice_zip"
+    ]
+
+    query_submitted =
+      Enum.any?(fields, fn field ->
+        value = Map.get(incoming_params, field, "")
+        value != "" and value != nil
+      end)
+
+    #
+    # Normalize params AFTER determining query_submitted
+    #
     params =
-      params
+      incoming_params
       |> Map.put_new("first_name", "")
       |> Map.put_new("last_name", "")
       |> Map.put_new("npi", "")
@@ -27,27 +54,30 @@ defmodule ProviderLookupWeb.ProviderController do
       |> Map.put_new("practice_zip", "")
       |> Map.put_new("page", "1")
 
-    # detect if user typed anything
-    query_submitted =
-      params
-      |> Enum.reject(fn {k,_} -> k in ["_csrf_token", "_utf8", "page"] end)
-      |> Enum.any?(fn {_k, v} -> v != "" end)
-
-    %{results: providers, page: page} =
+    #
+    # Execute search ONLY if user typed something
+    #
+    %{results: providers, page: page, has_next: has_next, has_prev: has_prev} =
       if query_submitted do
         ProviderSearch.search(params)
       else
-        %{results: [], page: 1}
+        %{results: [], page: 1, has_next: false, has_prev: false}
       end
 
+    #
+    # Render UI
+    #
     render(conn, :search,
       params: params,
       query_submitted: query_submitted,
       providers: providers,
-      page: page
+      page: page,
+      has_next: has_next,
+      has_prev: has_prev
     )
   end
 
+  # GET "/providers/:id"
   def show(conn, %{"id" => id}) do
     provider =
       Provider

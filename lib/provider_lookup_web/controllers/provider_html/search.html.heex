@@ -1,65 +1,84 @@
-<% params = @params || %{} %>
+<% params = @params || %{} %>   <!-- Ensure params map always exists -->
 
 <div class="min-h-screen bg-gradient-to-b from-[#283a60] via-[#364872] to-[#4c5a85] text-white py-16 px-6">
-
+  <!-- Page header -->
   <h1 class="text-center text-5xl font-bold mb-14 tracking-wide drop-shadow-md">
     Provider Lookup
   </h1>
 
   <!-- SEARCH FORM -->
+  <!-- This form submits via GET to /search and preserves all query parameters -->
   <form action="/search" method="get"
         class="flex flex-wrap gap-5 justify-center max-w-6xl mx-auto mb-12">
 
+    <!-- First Name input -->
     <input name="first_name"
            placeholder="First Name"
            value={params["first_name"] || ""}
-           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20
+                  backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
+    <!-- NPI input -->
     <input name="npi"
            placeholder="NPI"
            value={params["npi"] || ""}
-           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20
+                  backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
+    <!-- Taxonomy input -->
     <input name="taxonomy"
            placeholder="Taxonomy"
            value={params["taxonomy"] || ""}
-           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20
+                  backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
+    <!-- Practice Street input -->
     <input name="practice_address_1"
            placeholder="Practice Street"
            value={params["practice_address_1"] || ""}
-           class="px-4 py-3 w-80 rounded-lg bg-white/10 border border-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+           class="px-4 py-3 w-80 rounded-lg bg-white/10 border border-white/20
+                  backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
+    <!-- Practice City input -->
     <input name="practice_city"
            placeholder="Practice City"
            value={params["practice_city"] || ""}
-           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+           class="px-4 py-3 w-72 rounded-lg bg-white/10 border border-white/20
+                  backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
+    <!-- Practice State input -->
     <input name="practice_state"
            placeholder="Practice State"
            value={params["practice_state"] || ""}
-           class="px-4 py-3 w-40 rounded-lg bg-white/10 border border-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+           class="px-4 py-3 w-40 rounded-lg bg-white/10 border border-white/20
+                  backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
+    <!-- Practice ZIP input -->
     <input name="practice_zip"
            placeholder="Practice ZIP Code"
            value={params["practice_zip"] || ""}
-           class="px-4 py-3 w-48 rounded-lg bg-white/10 border border-white/20 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+           class="px-4 py-3 w-48 rounded-lg bg-white/10 border border-white/20
+                  backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
 
+    <!-- Search button -->
     <button class="px-8 py-3 bg-blue-500 rounded-lg hover:bg-blue-400 transition font-semibold shadow-lg">
       Search
     </button>
   </form>
 
-  <!-- RESULTS -->
+  <!-- RESULTS SECTION -->
+  <!-- Only render results if the user submitted a search query -->
   <%= if @query_submitted do %>
-    <%= if @providers == [] do %>
 
+    <!-- If no providers matched -->
+    <%= if @providers == [] do %>
       <p class="text-center text-xl italic mt-14">No results found.</p>
 
     <% else %>
-
+      <!-- Results header -->
       <h2 class="text-3xl font-semibold mb-6 max-w-6xl mx-auto">Results</h2>
 
+      <!-- Results table -->
       <table class="w-full max-w-6xl mx-auto border-collapse text-lg">
         <thead>
           <tr class="border-b border-white/30 text-left bg-white/10 backdrop-blur-sm">
@@ -74,43 +93,56 @@
         </thead>
 
         <tbody>
+          <!-- Loop through all providers returned for the current page -->
           <%= for p <- @providers do %>
             <tr class="border-b border-white/10 hover:bg-white/10 transition">
+              
+              <!-- NPI (clickable, no underline) -->
               <td class="py-3 px-4 text-blue-300 font-semibold hover:text-blue-200 transition">
                 <a href={"/providers/#{p.id}"} class="no-underline">
                   <%= p.npi_number %>
                 </a>
               </td>
 
+              <!-- Full name -->
               <td class="px-4"><%= p.first_name %> <%= p.last_name %></td>
 
+              <!-- Practice address fields -->
               <td class="px-4"><%= p.practice_address_1 || "" %></td>
               <td class="px-4"><%= p.practice_city || "" %></td>
               <td class="px-4"><%= p.practice_state || "" %></td>
               <td class="px-4"><%= p.practice_zip || "" %></td>
 
+              <!-- Taxonomy list -->
               <td class="px-4"><%= Enum.join(p.taxonomy_names || [], ", ") %></td>
             </tr>
           <% end %>
         </tbody>
       </table>
 
-      <!-- PAGINATION -->
+      <!-- PAGINATION CONTROLS -->
+      <!-- These buttons only appear when appropriate based on has_prev / has_next -->
       <div class="flex justify-center gap-6 mt-10">
+
         <% prev_page = @page - 1 %>
         <% next_page = @page + 1 %>
 
-        <%= if @page > 1 do %>
+        <!-- Show "Previous" button only if a previous page exists -->
+        <%= if @has_prev do %>
           <a href={"?#{URI.encode_query(Map.put(@params, "page", prev_page))}"}
              class="px-6 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition">
             ⬅ Previous
           </a>
         <% end %>
 
-        <a href={"?#{URI.encode_query(Map.put(@params, "page", next_page))}"}
-           class="px-6 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition">
-          Next ➡
-        </a>
+        <!-- Show "Next" button only if more results exist -->
+        <%= if @has_next do %>
+          <a href={"?#{URI.encode_query(Map.put(@params, "page", next_page))}"}
+             class="px-6 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition">
+            Next ➡
+          </a>
+        <% end %>
+
       </div>
 
     <% end %>
