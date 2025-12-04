@@ -12,3 +12,4 @@ defmodule ProviderLookup.Repo.Migrations.AddPracticeAddressFields do
     end
   end
 end
+#These fields extend the provider record with practice location details (street, city, state, ZIP, etc.). They’re required to support location-based searching and the provider detail page

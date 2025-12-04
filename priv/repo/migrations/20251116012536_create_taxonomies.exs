@@ -14,3 +14,4 @@ defmodule ProviderLookup.Repo.Migrations.CreateTaxonomies do
     create unique_index(:taxonomies, [:taxonomy_code])
   end
 end
+#This creates the taxonomy reference table. It holds the NUCC taxonomy codes/classifications/specializations so the system can match each provider to the correct taxonomy definitions

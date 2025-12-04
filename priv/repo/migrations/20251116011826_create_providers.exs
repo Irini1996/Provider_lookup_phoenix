@@ -21,3 +21,4 @@ defmodule ProviderLookup.Repo.Migrations.CreateProviders do
     end
   end
 end
+ #This migration creates the core providers table. It stores all essential NPI provider information, which is the foundation of the search and detail pages.

@@ -12,3 +12,4 @@ defmodule ProviderLookup.Repo.Migrations.AddSearchIndexes do
 
   end
 end
+#These indexes improve search performance. They allow fast filtering on names, addresses, and taxonomy-related fields as the dataset grows into millions of rows

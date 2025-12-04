@@ -14,3 +14,4 @@ defmodule ProviderLookup.Repo.Migrations.CreateProviderTaxonomies do
     create index(:provider_taxonomies, [:taxonomy_id])
   end
 end
+#This builds the many-to-many relationship between providers and taxonomies. A provider may have multiple taxonomies, and this join table stores that relationship, including which one is primary
